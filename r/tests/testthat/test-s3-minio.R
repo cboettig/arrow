@@ -42,6 +42,11 @@ if (arrow_with_s3() && process_is_running("minio server")) {
     # If minio isn't running, this will hang for a few seconds and fail with a
     # curl timeout, causing `run_these` to be set to FALSE and skipping the tests
     fs$CreateDir(now)
+
+    # Confirm s3_bucket method can read the new bucket
+    bucket <- s3_bucket(now, endpoint_override = paste0("localhost:", minio_port))
+    expect_r6_class(bucket, "SubTreeFileSystem")
+
   })
   # Clean up when we're all done
   on.exit(fs$DeleteDir(now))
